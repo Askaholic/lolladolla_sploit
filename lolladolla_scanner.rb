@@ -2,10 +2,9 @@ require 'msf/core'
 
 class MetasploitModule < Msf::Auxiliary
 	
-	include Msf::Auxiliary::Scanner
+	include Msf::Exploit::Remote::HttpClient
 
 	def initialize
-
 		super(
 			'Name' => 'LollaDolla Scanna',
 			'Version' => 'v1',
@@ -13,13 +12,34 @@ class MetasploitModule < Msf::Auxiliary
 			'Author' => 'Dope Beats',
 			'License' => MSF_LICENSE
 		)
-	
-		deregister_options('RPORT', 'RHOST')
 	end
 
-	def run_host(ip)
-		begin
-			puts "Scanned..."
+	def run
+		puts "Scanning..."
+
+		res = send_request_cgi({
+			'method'=> 'GET',
+			'uri'	=> normalize_uri('dump'),
+			'port'	=> rport
+		})
+
+		if not res or res.code != 200
+			print_error("The dump request failed!")
+			return
 		end
+
+		html = res.get_html_document
+		ul_entries = html.search('li')
+
+		for li in ul_entries
+			match = li.text.match(/^balance (\d+\.\d\d)   public_key ([\w ,]+)   name ([\w ,]+)/)
+			if not match
+				next
+			end
+	
+			arr = match.captures
+			print_good(arr.to_s)
+		end
+
 	end
 end
