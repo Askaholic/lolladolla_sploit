@@ -32,7 +32,7 @@ class MetasploitModule < Msf::Auxiliary
 		ul_entries = html.search('li')
 
 		for li in ul_entries
-			match = li.text.match(/^balance (\d+\.\d\d)   public_key ([\w ,]+)   name ([\w ,]+)/)
+			match = li.text.match(/^balance (.*)   public_key (.*)   name (.*)/)
 			if not match
 				next
 			end
