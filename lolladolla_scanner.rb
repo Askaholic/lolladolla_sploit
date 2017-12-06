@@ -30,6 +30,8 @@ class MetasploitModule < Msf::Auxiliary
 
 		html = res.get_html_document
 		ul_entries = html.search('li')
+		
+		output = "Accounts\n    Name (Pubkey) : balance\n    =======================\n"
 
 		for li in ul_entries
 			match = li.text.match(/^balance (.*)   public_key (.*)   name (.*)/)
@@ -38,7 +40,11 @@ class MetasploitModule < Msf::Auxiliary
 			end
 	
 			arr = match.captures
-			print_good(arr.to_s)
+			output += "    #{arr[2]} (#{arr[1]}) : #{arr[0]}\n"
+		end
+
+		if ul_entries.length > 0
+			print_good(output)
 		end
 
 	end
