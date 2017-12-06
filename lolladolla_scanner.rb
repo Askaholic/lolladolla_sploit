@@ -10,7 +10,10 @@ class MetasploitModule < Msf::Auxiliary
 			'Version' => 'v1',
 			'Description' => 'Scan the lolladolla server',
 			'Author' => 'Dope Beats',
-			'License' => MSF_LICENSE
+			'License' => MSF_LICENSE,
+			'DefaultOptions' => {
+				'RPORT' => 8080
+			}
 		)
 	end
 
